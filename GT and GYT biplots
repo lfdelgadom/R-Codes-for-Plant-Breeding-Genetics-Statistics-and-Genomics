@@ -1,0 +1,215 @@
+####Genotype by Trait Biplot####
+
+library(readxl)
+Dewt <- read_excel("C:/Users/8th gen L480/Downloads/Soybean_Data_R_Analysis.xlsx")
+View(Dewt)
+#### How to compute GT Biplots in R ?####
+library(metan)
+names(Dewt)
+mod <- gtb(Dewt, GEN, resp = c("DTF", "PLH", "NDTM","RL", "DBGRDFP","PLW","EP", "SW", "GRI","MGT",     
+                               "CVG", "PODL","TNSPPL", "HSW","NPDPL"))
+
+# Basic Biplot
+plot(mod,
+     type = 1,
+     col.gen = 'blue',
+     col.env = 'red',
+     size.text.gen = 3)
+#The Average Tester Coordination view for genotype-trait 
+plot(mod,
+     type = 2,
+     col.gen = 'blue',
+     col.env = 'red',
+     size.text.gen = 3,repel=TRUE)
+# Which-won-where
+plot(mod,
+     type = 3,
+     col.gen = 'blue',
+     col.env = 'red',
+     size.text.gen = 2)
+# Discriminativeness vs. representativeness.
+plot(mod,
+     type = 4,
+     col.gen = 'blue',
+     col.env = 'red',
+     size.text.gen = 2)
+# Examine trait
+plot(mod,
+     type = 5,
+     col.gen = 'blue',
+     col.env = 'red',
+     size.text.gen = 4)# not worked 
+plot(mod,sel_env = "ENV")
+#Ranking traits
+plot(mod,
+     type = 6,
+     col.gen = 'blue',
+     col.env = 'red',
+     size.text.gen = 4)
+# Examine a genotype
+plot(mod,
+     type = 7,
+     col.gen = 'blue',
+     col.env = 'red',
+     size.text.gen = 4)# not worked 
+plot(mod,sel_gen = "GEN")
+#Ranking genotypes
+plot(mod,
+     type = 8,
+     col.gen = 'blue',
+     col.env = 'red',
+     size.text.gen = 4)
+#Compare two genotypes
+plot(mod,
+     type = 9,
+     col.gen = 'blue',
+     col.env = 'red',
+     size.text.gen = 4)# not worked
+plot(mod,sel_gen1 = "H1",sel_gen2 = "H10")
+# Relationship among traits
+plot(mod,
+     type = 10,
+     col.gen = 'blue',
+     col.env = 'red',
+     size.text.gen = 4)
+
+
+
+
+####Genotype by Yield*Trait Biplot #####
+library(metan)
+Dat <- read_excel("C:/Users/8th gen L480/OneDrive/Desktop/Data Anlysis/Kens data- chord diagram/Gui_comb21.xlsx")
+View(Dat)
+names(Dat)
+mod <- gytb(Dat, Geno, GYd)
+
+#Biplot##
+plot(mod,
+     type =1,
+     col.gen = "blue",
+     col.env = "red",
+     size.text.gen = 3)
+  
+#The Average tester coordination view for genotype ~ Y*trait
+plot(mod,
+     type =2,
+     col.gen = "blue",
+     col.env = "red",
+     size.text.gen = 3, repel = TRUE)
+
+#Which-won where.##
+plot(mod,
+     type =3,
+     col.gen = "blue",
+     col.env = "red",
+     size.text.gen = 2, repel = TRUE)
+
+#Discriminativeness vs. represenatativeness ##
+plot(mod,
+     type =4,
+     col.gen = "blue",
+     col.env = "red",
+     size.text.gen = 2)
+#Examine Y-Trait 
+plot(mod,
+     type = 5,
+     col.gen = "blue",
+     col.env = "red",
+     size.text.gen = 4, repel = TRUE)#not worked
+plot(mod, sel_env = "ENV")
+
+##Ranking Y*Traits
+plot(mod,
+     type =6,
+     col.gen = "blue",
+     col.env = "red",
+     size.text.gen = 2)
+##Examine a genotype 
+plot(mod,
+     type =7,
+     col.gen = "blue",
+     col.env = "red",
+     size.text.gen = 4, repel = TRUE)#not worked
+plot(mod, sel_env = "GEN")
+
+##Ranking genotypes ##
+plot(mod,
+     type =8,
+     col.gen = "blue",
+     col.env = "red",
+     size.text.gen = 2)
+##Comparing two genotypes 
+plot(mod,
+     type =9,
+     col.gen = "blue",
+     col.env = "red",
+     size.text.gen = 4)#not worked
+plot(mod, sel_gen1 = "G1", sel_gen2 = "G2")
+
+##Relationship among Y*Traits
+a = plot(mod,
+         type =10,
+         col.gen = "blue",
+         col.env = "red",
+         size.text.gen = 4)
+
+
+####Multitrait stability index analysis: A tool for seection of geneotypes####
+##Note: The genotype with the least index value is the most stable genotype
+library(metan)
+library(readxl)
+deat <- read_excel("C:/Users/8th gen L480/OneDrive/Desktop/Data Anlysis/Dr. Ken's results/Gui_comb21.xlsx")
+names(deat)
+##For some traits#
+
+x<- waasb(deat,
+          env = ENV,
+          gen = GEN,
+          rep = REP,
+          resp = c("DFH",  "PHt",  "PLt",  "PDM",  "HSWt", "GYd"))
+                   
+  
+mtsi_index <- mtsi(x, index = 'waasb')
+plot(mtsi_index)
+mtsi_index$MTSI
+
+###Circular column chart in R ####
+library(AgroR)
+library(readxl)
+Dat1 <- read_excel("C:/Users/8th gen L480/OneDrive/Desktop/Research data/GYT Biplot.xlsx", 
+                   sheet = "Cleaned")
+names(Dat1)
+graph1 <- with(Dat1, DIC(Geno, ASI, mcomp = "lsd")) ##for Completely randomized design
+graph1
+radargraph(graph1)
+
+graph2 <- with(Dat1, DBC(GEN, REP, GRY, mcomp = "lsd"))## for RCBD                    
+   radargraph(graph2)
+
+
+
+# (MGIDI)Multitrait Genotype-Ideotype Distance Index in R  ####
+# Create a mixed-effect model (genotype as random effect)
+# For selecting best performing genotypes in a plant breeding program. 
+
+library(metan)
+Dat <- read_excel("C:/Users/8th gen L480/OneDrive/Desktop/Data Anlysis/Kens data- chord diagram/Gui_comb21.xlsx")
+View(Dat)
+names(Dat)
+model=gamem(Dat,
+            gen = GEN,
+            rep = BLOCK,
+            resp = GYd  ## select response variables you need eg: resp = YIELD; ##gen, resp, rep = for RCBD;
+
+# Genetic parameters
+get_model_data(model, "genpar")
+get_model_data(model, "ranef")
+
+#BLUPs for genotypes
+a=gmd(model,"blupg")
+#Compute the MGIDI index
+aku =mgidi(model)
+# plot the contribution of each factor on the MGIDI index
+p1=plot(aku, type = "contribution")
+p2=plot(aku)
+p1+p2
