@@ -1,0 +1,24 @@
+######Multi-trait Genotype-Ideotype Distance Index (MGIDI) In R###https://www.youtube.com/watch?v=8XBNPCXS5hQ
+#Create a mixed-effects model (genotype as random effect)
+library(readxl)
+mgid <- read_excel("C:/Users/8th gen L480/OneDrive/Desktop/Research data/MSV Analysis.xlsx", 
+                   sheet = "MGIDI")
+View(mgid)
+names(mgid)
+library(metan)
+model <- gamem(mgid ,
+               gen = GEN,
+               rep = REP,
+               block = BLOCK,
+               resp = everything())
+#BLUPS for genotypes
+a = gmd(model, "blupg")
+print(a, n=200)
+
+#Compute the MGIDI index
+aku <- mgidi(model)
+mgidi_ind <- mgidi(model)
+gmd(mgidi_ind, "MGIDI")
+#Plot the contribution of each factor on the MGIDI index 
+p1 <- plot(aku,type = "contributor")
+p2 <- plot(aku)
