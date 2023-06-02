@@ -1,0 +1,72 @@
+## Checking normality od data distribution
+install.packages('rcompanion')
+library(rcompanion)
+library(readxl)
+myinf<- read_excel("C:/Users/8th gen L480/OneDrive/Desktop/Research data/Data sheet.xlsx", 
+                         sheet = "MSVINFF")
+View(myinf)
+
+attach(myinf)
+myinf1 = c( D1, D2, D3, D4, D5, D6, D7, D8, INC, MORTALITY, SEV)
+qqnorm(myinf1)
+qqline(myinf1, col="blue")
+plotNormalHistogram(myinf1)##test reveals data is positvely skewed, not normally distributed
+
+##square root transformation
+myinf1_sqrt = sqrt(myinf1)
+plotNormalHistogram(myinf_sqrt)### still not normally distributed
+library(psych)
+skew(myinf1)  ## skew value = 2.758861, too high
+
+#Visualizing a matrix of scatterplots
+
+pairs(
+  
+  x = myinf[2:12], #specify range of column numbers to use in scatterplot
+  main = "A matrix of scatterplots", #specify name of scatterplot
+  bg = c("red","green3","blue"),
+  upper.panel = NULL
+)
+## cube root transformation
+myinf_cub = sign(myinf1) * abs(myinf1)^(1/3)
+plotNormalHistogram(myinf_cub)
+skew(myinf_cub)
+hist(myinf_cub)
+
+##log transformation
+myinf_log = log(myinf1 +1) ### add 1 before transforming when zeros are present
+plotNormalHistogram(myinf_log)
+skew(myinf_log)
+hist(myinf_log) ### PRODUCED NaNs
+
+##Tukey's Ladder of powers transformation
+
+myinf_tuk = transformTukey(myinf1, plotit = TRUE)
+plotNormalHistogram(myinf_tuk) ## data is normally distributed
+skew(myinf_tuk)## skewness  = 0.3564548, p-value = 4.887e-28
+boxplot(myinf_tuk)
+summary(myinf_tuk)
+
+# Data standardization ####
+
+##min_max normalization #
+library(readxl)
+datrans <- read_excel("C:/Users/8th gen L480/Downloads/Compressed/ANALYSED DATA - ALL/ANALYSED DATA - ALL/LANDRACES EVALUTION DROUGHT AND WELL-WATERED/WELL-WATERED/USE FOR ANALYSIS ANALYSIS/LANDRACES WELL-WATERED COMBINED.xlsx", 
+                      sheet = "Cleaned ")
+
+min_max <- function(x){
+  res <- (x - min(x))/(max(x) - min(x))
+  return(res)
+}
+newd <- as.data.frame(sapply(datrans[,5:17], min_max))
+newd   
+newd(summary)
+names(datrans)
+### z score standardization
+z_score <- function(x){
+  res <- (x - mean(x))/sd(x)
+  return(res)
+}
+newd1 <- as.data.frame(sapply(datrans[,5:17], z_score))
+newd1
+summary(newd1)
